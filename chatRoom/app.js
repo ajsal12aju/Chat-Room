@@ -11,11 +11,11 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
-  res.render('index', { io }); // Pass io object to the view
+  res.render('index', { io }); 
 });
 
 io.on('connection', (socket) => {
-  chatController.handleConnection(io, socket); // Pass io object to the controller
+  chatController.handleConnection(io, socket);
 });
 
 const PORT = process.env.PORT || 3000;
