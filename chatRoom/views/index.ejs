@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Room</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    #userList,
+    #messages {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #userList {
+      float: left;
+      width: 20%;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #userList li {
+      margin-bottom: 8px;
+    }
+
+    #chatContainer {
+      float: left;
+      width: 80%;
+      max-width: 600px;
+      margin: 20px;
+    }
+
+    #messages {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #messageForm {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    #messageInput {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+
+    button {
+      padding: 8px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .message.sent {
+      background-color: #4caf50;
+      color: #fff;
+      align-self: flex-end;
+    }
+
+    .message.received {
+      background-color: #ddd;
+      color: #000;
+      align-self: flex-start;
+    }
+  </style>
+</head>
+<body>
+  <ul id="userList"></ul>
+  <ul id="messages"></ul>
+
+  <form id="messageForm">
+    <input id="messageInput" autocomplete="off" /><button>Send</button>
+  </form>
+
+  <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+
+    const name = window.prompt('Enter your name:');
+    const key = window.prompt('Enter the special key:');
+
+    if (!name || !key || name.trim() === '' || key.trim() === '') {
+      window.alert('Invalid input. Please refresh the page and try again.');
+    } else {
+      socket.emit('join', { name, key });
+
+      socket.on('userList', (users) => {
+        const userList = document.getElementById('userList');
+        userList.innerHTML = users.map(user => `<li style="color: ${user.key === key ? 'blue' : 'green'}">${user.name}</li>`).join('');
+      });
+
+      socket.on('message', (data) => {
+        const messages = document.getElementById('messages');
+        const li = document.createElement('li');
+        li.style.color = data.color;
+        li.textContent = data.text;
+        messages.appendChild(li);
+      });
+
+      document.getElementById('messageForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value;
+        if (message.trim() !== '') {
+          socket.emit('sendMessage', { name, message });
+          messageInput.value = '';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
