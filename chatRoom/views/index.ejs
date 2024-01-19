@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Room</title>
+  <title>Chat App</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -105,7 +105,7 @@
     const key = window.prompt('Enter the special key:');
 
     if (!name || !key || name.trim() === '' || key.trim() === '') {
-      window.alert('Invalid input. Please refresh the page and try again.');
+      window.alert('Invalid input. Please refresh the page and try again');
     } else {
       socket.emit('join', { name, key });
 
