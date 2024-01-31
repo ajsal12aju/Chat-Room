@@ -116,7 +116,7 @@
 
       socket.on('message', (data) => {
         const messages = document.getElementById('messages');
-        console.log(messages, 'messagedds')
+        console.log(messages, 'messages')
         const li = document.createElement('li');
         li.style.color = data.color;
         li.textContent = data.text;
